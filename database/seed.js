@@ -1,6 +1,7 @@
-// Import database and model
+// seed.js
+const { Track, sequelize } = require('./setup.js'); // Import model and Sequelize connection
 
-// Seed data
+// Sample tracks data
 const sampleTracks = [
   {
     songTitle: "Bohemian Rhapsody",
@@ -100,4 +101,23 @@ const sampleTracks = [
   }
 ];
 
-// Seed database with sample data
+// Asynchronous function to seed the database
+async function seedDatabase() {
+  try {
+    // Make sure tables exist
+    await sequelize.sync();
+
+    // Insert sample tracks into the database
+    await Track.bulkCreate(sampleTracks);
+    console.log('✅ Sample tracks have been added successfully!');
+  } catch (error) {
+    console.error('❌ Error seeding database:', error);
+  } finally {
+    // Close database connection
+    await sequelize.close();
+    console.log('✅ Database connection closed after seeding.');
+  }
+}
+
+// Run the seed function
+seedDatabase();
